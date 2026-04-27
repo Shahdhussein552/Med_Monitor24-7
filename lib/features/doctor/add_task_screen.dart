@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'tasks.dart'; // تأكدي من صحة المسار لملف TasksScreen
+import 'package:shared_preferences/shared_preferences.dart'; // ضفت دي عشان نقرأ التاسكات القديمة
+import 'dart:convert';
+import 'tasks.dart';
+import 'warning_screen.dart'; // تأكدي من إنشاء الملف ده اللي فيه شاشة الـ Warning
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({Key? key}) : super(key: key);
@@ -26,6 +29,25 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _nurseController = TextEditingController();
   final TextEditingController _patientController = TextEditingController();
+
+  // --- دالة فحص التعارض ---
+  Future<bool> _hasTimeConflict(String newStartTime) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? tasksJson = prefs.getString('tasks');
+
+    if (tasksJson != null) {
+      List<dynamic> decoded = jsonDecode(tasksJson);
+      List<Map<String, String>> existingTasks = decoded.map((e) => Map<String, String>.from(e)).toList();
+
+      for (var task in existingTasks) {
+        // بنشيك لو فيه تاسك تانية في نفس المعاد (startTime)
+        if (task['startTime'] == newStartTime) {
+          return true; // لقيت تعارض
+        }
+      }
+    }
+    return false; // مفيش تعارض
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +114,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ],
             ),
 
-            // Dropdown للـ Remind
             _buildInputField(
               "Remind",
               "$_selectedRemind minutes early",
@@ -116,7 +137,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
             ),
 
-            // Dropdown للـ Repeat
             _buildInputField(
               "Repeat",
               _selectedRepeat,
@@ -174,26 +194,36 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       backgroundColor: primaryBlue,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_titleController.text.isNotEmpty) {
-                        // تجهيز البيانات لإرسالها لصفحة TasksScreen
-                        Map<String, String> newTask = {
-                          "name": _titleController.text,
-                          "note": _noteController.text.isEmpty ? "No Note" : _noteController.text,
-                          "startTime": _startTime,
-                          "endTime": _endTime,
-                          "status": "Todo",
-                          "nurse": _nurseController.text,
-                          "patient": _patientController.text,
-                        };
 
-                        // الانتقال لصفحة العرض مع تمرير المهمة
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => TasksScreen(newTask: newTask)),
-                        );
+                        // --- التشيك قبل الحفظ ---
+                        bool conflict = await _hasTimeConflict(_startTime);
+
+                        if (conflict) {
+                          // لو فيه تعارض، روح لشاشة الـ Warning
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const TimeConflictScreen()),
+                          );
+                        } else {
+                          // لو مفيش تعارض، كمل الحفظ عادي
+                          Map<String, String> newTask = {
+                            "name": _titleController.text,
+                            "note": _noteController.text.isEmpty ? "No Note" : _noteController.text,
+                            "startTime": _startTime,
+                            "endTime": _endTime,
+                            "status": "Todo",
+                            "nurse": _nurseController.text,
+                            "patient": _patientController.text,
+                          };
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => TasksScreen(newTask: newTask)),
+                          );
+                        }
                       } else {
-                        // تنبيه بسيط في حال نسيان العنوان
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Title is required!")),
                         );
@@ -214,26 +244,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 
-  // --- Functions ---
-
+  // الدوال الباقية زي ما هي مش محتاجة تغيير...
   _getDateFromUser() async {
     DateTime? pickerDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2015),
       lastDate: DateTime(2121),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF7CA1FF),
-              onPrimary: Colors.white,
-              onSurface: Color(0xFF3B5BB5),
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
     if (pickerDate != null) {
       setState(() {
@@ -261,17 +278,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       initialEntryMode: TimePickerEntryMode.input,
       context: context,
       initialTime: TimeOfDay.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF7CA1FF),
-              onSurface: Color(0xFF3B5BB5),
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
   }
 
@@ -304,10 +310,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   child: TextFormField(
                     readOnly: onTap != null || widget != null,
                     controller: controller,
-                    autofocus: false,
                     decoration: InputDecoration(
                       hintText: hint,
-                      hintStyle: const TextStyle(color: Colors.grey),
                       border: InputBorder.none,
                     ),
                   ),
