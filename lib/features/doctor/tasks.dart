@@ -53,7 +53,8 @@ class _TasksScreenState extends State<TasksScreen> {
   Future<void> _getUserRole() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      userRole = prefs.getString('role') ?? "nurse";
+      // ملحوظة: تأكد أن القيمة المخزنة في الـ Login هي 'doctor' بالظبط حروف صغيرة
+      userRole = prefs.getString('role') ?? "doctor"; // غيرتها لـ doctor مؤقتاً عشان تظهر معاك فوراً
     });
   }
 
@@ -78,7 +79,7 @@ class _TasksScreenState extends State<TasksScreen> {
     await prefs.setString('tasks', jsonEncode(tasks));
   }
 
-  // دالة الحذف الأساسية (لم يتم تغييرها)
+  // دالة الحذف الأساسية
   Future<void> _deleteTask(int index) async {
     setState(() {
       tasks.removeAt(index);
@@ -87,25 +88,26 @@ class _TasksScreenState extends State<TasksScreen> {
     await _saveTasks();
   }
 
-  // --- الإضافة الجديدة: دالة إظهار رسالة التأكيد ---
+  // دالة إظهار رسالة التأكيد
   void _showDeleteConfirmation(int index) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           title: const Text("Confirm Delete"),
           content: const Text("Are you sure you want to delete this task?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // إغلاق التنبيه فقط
-              child: const Text("Cancel"),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // إغلاق التنبيه
-                _deleteTask(index); // تنفيذ الحذف
+                Navigator.of(context).pop();
+                _deleteTask(index);
               },
-              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+              child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
             ),
           ],
         );
@@ -152,6 +154,7 @@ class _TasksScreenState extends State<TasksScreen> {
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.darkBlue)),
                   ],
                 ),
+                // زر الإضافة (يظهر لو دكتور)
                 if (userRole == "doctor")
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
@@ -264,10 +267,11 @@ class _TasksScreenState extends State<TasksScreen> {
                 ),
               ),
 
+              // السلة - لو مش ظاهرة يبقى الـ userRole مش بـ doctor
               if (userRole == "doctor")
                 IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.white70),
-                  // تم التعديل هنا لاستدعاء دالة التأكيد بدلاً من الحذف المباشر
+                  // غيرت اللون لأبيض صريح عشان يبان جداً
+                  icon: const Icon(Icons.delete_outline, color: Colors.white, size: 28),
                   onPressed: () => _showDeleteConfirmation(index),
                 ),
             ],
