@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // ضفت دي عشان نقرأ التاسكات القديمة
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'tasks.dart';
-import 'warning_screen.dart'; // تأكدي من إنشاء الملف ده اللي فيه شاشة الـ Warning
+import 'warning_screen.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({Key? key}) : super(key: key);
@@ -37,16 +36,27 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
     if (tasksJson != null) {
       List<dynamic> decoded = jsonDecode(tasksJson);
-      List<Map<String, String>> existingTasks = decoded.map((e) => Map<String, String>.from(e)).toList();
-
-      for (var task in existingTasks) {
-        // بنشيك لو فيه تاسك تانية في نفس المعاد (startTime)
+      for (var task in decoded) {
         if (task['startTime'] == newStartTime) {
-          return true; // لقيت تعارض
+          return true; // يوجد تعارض
         }
       }
     }
-    return false; // مفيش تعارض
+    return false; // لا يوجد تعارض
+  }
+
+  // --- دالة حفظ التاسك الجديدة في SharedPreferences ---
+  Future<void> _saveTaskLocally(Map<String, String> newTask) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? tasksJson = prefs.getString('tasks');
+    List<dynamic> tasksList = [];
+
+    if (tasksJson != null) {
+      tasksList = jsonDecode(tasksJson);
+    }
+
+    tasksList.add(newTask);
+    await prefs.setString('tasks', jsonEncode(tasksList));
   }
 
   @override
@@ -68,14 +78,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           "Add Tasks",
           style: TextStyle(color: textBlue, fontSize: 26, fontWeight: FontWeight.bold),
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 15),
-            child: CircleAvatar(
-              backgroundImage: AssetImage("assets/nurse (1).png"),
-            ),
-          )
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -196,18 +198,15 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ),
                     onPressed: () async {
                       if (_titleController.text.isNotEmpty) {
-
-                        // --- التشيك قبل الحفظ ---
                         bool conflict = await _hasTimeConflict(_startTime);
 
                         if (conflict) {
-                          // لو فيه تعارض، روح لشاشة الـ Warning
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const TimeConflictScreen()),
                           );
                         } else {
-                          // لو مفيش تعارض، كمل الحفظ عادي
+                          // تجميع البيانات
                           Map<String, String> newTask = {
                             "name": _titleController.text,
                             "note": _noteController.text.isEmpty ? "No Note" : _noteController.text,
@@ -218,10 +217,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             "patient": _patientController.text,
                           };
 
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => TasksScreen(newTask: newTask)),
-                          );
+                          // 1. حفظ في الذاكرة
+                          await _saveTaskLocally(newTask);
+
+                          // 2. الرجوع فقط للشاشة السابقة (ستقوم هي بتحديث نفسها)
+                          Navigator.pop(context);
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -244,7 +244,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 
-  // الدوال الباقية زي ما هي مش محتاجة تغيير...
   _getDateFromUser() async {
     DateTime? pickerDate = await showDatePicker(
       context: context,
@@ -260,7 +259,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   _getTimeFromUser({required bool isStartTime}) async {
-    var pickedTime = await _showTimePicker();
+    var pickedTime = await showTimePicker(
+      initialEntryMode: TimePickerEntryMode.input,
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
     if (pickedTime != null) {
       String formattedTime = pickedTime.format(context);
       setState(() {
@@ -271,14 +274,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         }
       });
     }
-  }
-
-  _showTimePicker() {
-    return showTimePicker(
-      initialEntryMode: TimePickerEntryMode.input,
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
   }
 
   Widget _buildInputField(String label, String hint, {

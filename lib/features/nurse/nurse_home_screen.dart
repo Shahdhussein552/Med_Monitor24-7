@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/nav_painter.dart';
-import '../doctor/user_profile.dart';
+import '../../models/user_profile.dart';
 import 'nurse_custom_drawer.dart';
 import 'nurse_profile_screen.dart';
 import 'nurse_tasks_screen.dart';

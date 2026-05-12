@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../features/doctor/app_models.dart'; // تأكد من المسار الصحيح
-import '../../features/doctor/user_profile.dart';
+import '../../models/app_models.dart'; // تأكد من المسار الصحيح
+import '../../models/user_profile.dart';
 import '../../features/doctor/update_doctor_profile_screen.dart';
 
 class DoctorProfileScreen extends StatefulWidget {

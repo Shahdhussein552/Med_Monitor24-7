@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 // استبدلي السطر القديم بـ
-import 'package:med_monitor/features/doctor/user_profile.dart';
+import 'package:med_monitor/models/user_profile.dart';
 class UpdateProfileScreen extends StatefulWidget {
   final UserProfile user;
   final Function(UserProfile) onSave;

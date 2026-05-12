@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../features/doctor/app_models.dart';
-import '../../features/doctor/user_profile.dart';
+import '../../models/app_models.dart';
+import '../../models/user_profile.dart';
 import '../../features/doctor/patient_status_screen.dart';
 
 class AddPatientScreen extends StatefulWidget {

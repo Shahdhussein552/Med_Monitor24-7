@@ -9,9 +9,9 @@ import 'providers/auth_provider.dart';
 import 'package:med_monitor/providers/notification_provider.dart';
 
 // --- Models ---
-import 'features/doctor/user_profile.dart';
-import 'features/doctor/patient_model.dart';
-import 'features/doctor/app_models.dart';
+import 'models/user_profile.dart';
+import 'models/patient_model.dart';
+import 'models/app_models.dart';
 
 // --- Screens: Splash & Welcome ---
 import 'features/splash/splash_screen.dart';
@@ -44,8 +44,6 @@ import 'features/doctor/patient_details_screen.dart';
 import 'package:med_monitor/features/nurse/nurse_home_screen.dart';
 import 'package:med_monitor/features/nurse/nurse_profile_screen.dart';
 import 'package:med_monitor/features/nurse/beds.dart' as nurse_beds;
-import 'package:med_monitor/features/nurse/settings_screen.dart' as nurse_settings;
-import 'package:med_monitor/features/nurse/help_screen.dart' as nurse_help;
 import 'package:med_monitor/features/nurse/nurse_patient_details_screen.dart' as nurse_patient_details;
 import 'package:med_monitor/features/nurse/nurse_tasks_screen.dart' as nurse_tasks_screen;
 // --- Screens: Admin / Super Admin Features ---
@@ -252,7 +250,7 @@ class _MedMonitorAppState extends State<MedMonitorApp> {
               return MaterialPageRoute(builder: (_) => const RequestStatusScreen());
           // ✅ شاشة التاسكات الرئيسية للدكتور
             case '/createTasks':
-              return MaterialPageRoute(builder: (_) => const CreateTasksScreen());
+              return MaterialPageRoute(builder: (_) => const TasksScreen());
           // ✅ شاشة إضافة تاسك — دعم للاسمين /addTask و /add_task
             case '/add_task':
             case '/addTask':
@@ -275,10 +273,7 @@ class _MedMonitorAppState extends State<MedMonitorApp> {
               );
             case '/nurseBeds':
               return MaterialPageRoute(builder: (_) => const nurse_beds.BedsScreen());
-            case '/nurseSettings':
-              return MaterialPageRoute(builder: (_) => const nurse_settings.SettingsScreen());
-            case '/nurseHelp':
-              return MaterialPageRoute(builder: (_) => const nurse_help.HelpScreen());
+
           // ✅ شاشة التاسكات عند الـ Nurse — بدون زر Add Task
           // داخل MaterialApp في ملف main.dart
             case '/nurseTasks':

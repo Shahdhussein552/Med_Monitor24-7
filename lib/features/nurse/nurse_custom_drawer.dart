@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../doctor/user_profile.dart';
+import '../../models/user_profile.dart';
 import '../doctor/logout_screen.dart';
 import '../../features/doctor/settings_screen.dart';
 import '../../features/doctor/help_screen.dart';

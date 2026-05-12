@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // 1. المسار الصحيح للشاشة التفصيلية
 import 'package:med_monitor/features/nurse/nurse_patient_details_screen.dart';
 // 2. المسار الصحيح للموديل (تأكدي من اسم الـ package)
-import 'package:med_monitor/features/doctor/patient_model.dart';
+import 'package:med_monitor/models/patient_model.dart';
 // 3. المسار الصحيح للـ MonitorScreen (عشان يحل الايرور الثاني)
 import 'package:med_monitor/features/doctor/monitor_screen.dart';
 import 'package:med_monitor/features/nurse/nurse_tasks_screen.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../doctor/app_models.dart';
-import '../doctor/user_profile.dart';
+import '../../models/app_models.dart';
+import '../../models/user_profile.dart';
 import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {

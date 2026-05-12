@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../doctor/patient_model.dart';
-import '../doctor/app_models.dart';
+import '../../models/patient_model.dart';
+import '../../models/app_models.dart';
 import '../../features/doctor/monitor_card.dart';
 import '../../features/doctor/chat_screen.dart';
 import '../../features/doctor/patient_reports_screen.dart';
 import '../../features/doctor/personal_data_screen.dart';
-import '../../features/doctor/tasks.dart';
+import '../../features/doctor/create_tasks_screen.dart';
 import '../../features/doctor/vital_signs_screen.dart';
 
 class PatientDetailScreen extends StatelessWidget {
@@ -61,14 +61,15 @@ class PatientDetailScreen extends StatelessWidget {
               ),
               Expanded(
                 child: Center(
-                  child: Text(
-                    patient.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold),
+                  child: FittedBox( // تعديل وقائي: يمنع تجاوز اسم المريض للحدود
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      patient.name,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),
@@ -186,7 +187,7 @@ class PatientDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Expanded(
+                  Flexible( // تعديل وقائي: يمنع تجاوز النص لمساحة الزر
                     flex: 2,
                     child: Text(
                       item['label'],

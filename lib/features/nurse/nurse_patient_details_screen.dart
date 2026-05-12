@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../doctor/patient_model.dart';
-import '../doctor/app_models.dart';
+import '../../models/patient_model.dart';
+import '../../models/app_models.dart';
 import '../../features/doctor/monitor_card.dart';
 import '../../features/doctor/chat_screen.dart';
 import '../../features/doctor/patient_reports_screen.dart';

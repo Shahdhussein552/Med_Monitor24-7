@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_monitor/features/doctor/wave_painter.dart';
-import 'patient_model.dart';
+import '../../models/patient_model.dart';
 
 class MonitorScreen extends StatefulWidget {
   final PatientData patient;

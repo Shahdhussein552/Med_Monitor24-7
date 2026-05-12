@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../doctor/patient_model.dart';
+import '../../models/patient_model.dart';
 import '../doctor/custom_painter.dart';
 
 class BedsScreen extends StatefulWidget {

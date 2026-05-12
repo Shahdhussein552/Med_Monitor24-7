@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../doctor/app_models.dart';
-import '../doctor/user_profile.dart';
+import '../../models/app_models.dart';
+import '../../models/user_profile.dart';
 // تأكد من صحة هذه المسارات في مشروعك
 import 'custom_drawer.dart';
 import '../doctor/dynamic_circle_painter.dart';

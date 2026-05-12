@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../doctor/app_models.dart';
+import '../../models/app_models.dart';
 import '../admin/no_beds_super_admin.dart';
 
 class PatientFormScreen extends StatefulWidget {

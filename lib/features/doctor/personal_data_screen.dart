@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_models.dart'; // تأكد من استيراد الموديل
+import '../../models/app_models.dart'; // تأكد من استيراد الموديل
 
 class PersonalDataScreen extends StatefulWidget {
   // ✅ إضافة الـ request هنا عشان نستقبل البيانات

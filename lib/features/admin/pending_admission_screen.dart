@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/constants.dart';
-import '../doctor/app_models.dart';
-import '../doctor/user_profile.dart';
+import '../../models/app_models.dart';
+import '../../models/user_profile.dart';
 import '../doctor/dynamic_circle_painter.dart';
 import 'patient_form_screen.dart';
 import 'profile_screen.dart';

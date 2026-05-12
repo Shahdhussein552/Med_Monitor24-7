@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'user_profile.dart';
+import '../../models/user_profile.dart';
+import 'create_tasks_screen.dart';
 import 'doctor_custom_drawer.dart';
 import '../../core/nav_painter.dart';
 import '../../features/doctor/doctor_profile_screen.dart';
@@ -56,18 +57,17 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
     );
   }
 
-  // دالة لاختيار المحتوى بناءً على الـ index المحدثة لربط البروفايل
   Widget _buildBodyContent() {
     switch (_selectedIndex) {
       case 0:
-        return _buildUnitsView(); // واجهة الوحدات الأصلية
+        return _buildUnitsView();
       case 1:
-        return _buildTasksView(); // واجهة المهام
+      // استدعاء واجهة المهام
+        return const TasksScreen();
       case 2:
-      // ✅ تم استبدال النص بكلاس DoctorProfileScreen مع تمرير البيانات
         return DoctorProfileScreen(
-          user: currentUser, // المستخدم الحالي
-          onUpdate: _updateUser, // دالة التحديث لضمان مزامنة البيانات
+          user: currentUser,
+          onUpdate: _updateUser,
         );
       default:
         return _buildUnitsView();

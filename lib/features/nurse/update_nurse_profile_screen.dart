@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../doctor/user_profile.dart';
+import '../../models/user_profile.dart';
 
 class UpdateNurseProfileScreen extends StatefulWidget {
   final UserProfile user;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../doctor/user_profile.dart';
-import '../../features/admin/help_screen.dart';
+import '../../models/user_profile.dart';
+import '../../features/doctor/help_screen.dart';
 import '../../features/admin/edit_profile_screen.dart';
 import '../../features/admin/settings_screen.dart';
-import '../../features/admin/logout_screen.dart';
+import '../../features/doctor/logout_screen.dart';
 
 // تأكدي من استيراد ملف الـ LogoutDialog إذا كان في ملف منفصل
 // import 'path_to_your_dialog_file/logout_dialog.dart';

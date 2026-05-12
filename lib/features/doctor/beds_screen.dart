@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:med_monitor/features/doctor/patient_details_screen.dart';
-import '../../features/doctor/patient_model.dart';
+import '../../models/patient_model.dart';
 import '../../features/doctor/monitor_screen.dart';
 
 class BedsScreen extends StatelessWidget {
